@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GenuineWeb — Find the Real Site, Skip the Phishing Trap</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&family=Inter:wght@400;500;600&display=swap');
+
+  :root {
+    --paper: #F7F4EC;
+    --paper-raised: #FBF9F3;
+    --indigo: #1C2B4A;
+    --indigo-soft: #3A4A6B;
+    --marigold: #D68A1E;
+    --sage: #5C7A5C;
+    --charcoal: #2A2A28;
+    --hairline: #D9D3C2;
+    --danger: #A33A2E;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    color: var(--charcoal);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.5;
+  }
+
+  .wrap {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  nav {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .nav-mark {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Source Serif 4', serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--indigo);
+  }
+
+  .nav-mark svg { width: 22px; height: 22px; }
+
+  .nav-links { display: flex; gap: 22px; font-size: 13.5px; }
+  .nav-links a { color: var(--indigo-soft); text-decoration: none; cursor: pointer; }
+  .nav-links a:hover { color: var(--marigold); }
+
+  header.hero { padding: 48px 0 8px; }
+
+  h1 {
+    font-family: 'Source Serif 4', serif;
+    font-weight: 700;
+    font-size: 36px;
+    color: var(--indigo);
+    letter-spacing: -0.01em;
+    max-width: 16ch;
+  }
+
+  .tagline {
+    font-family: 'Source Serif 4', serif;
+    font-size: 17px;
+    color: var(--indigo-soft);
+    font-style: italic;
+    max-width: 50ch;
+    margin-top: 10px;
+  }
+
+  .warning {
+    margin-top: 22px;
+    padding: 13px 16px;
+    background: var(--paper-raised);
+    border-left: 3px solid var(--marigold);
+    font-size: 13.5px;
+    color: var(--indigo-soft);
+    max-width: 60ch;
+  }
+
+  .search-row { margin: 32px 0 8px; }
+
+  #search {
+    width: 100%;
+    padding: 13px 16px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    background: var(--paper-raised);
+    border: 1px solid var(--hairline);
+    color: var(--charcoal);
+  }
+
+  #search:focus { outline: 2px solid var(--indigo); outline-offset: -1px; }
+  #search::placeholder { color: #9A9384; }
+
+  .tabs { display: flex; gap: 4px; margin: 18px 0 8px; flex-wrap: wrap; }
+
+  .tab {
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    padding: 7px 13px;
+    background: transparent;
+    border: 1px solid var(--hairline);
+    color: var(--indigo-soft);
+    cursor: pointer;
+  }
+
+  .tab:hover { border-color: var(--indigo-soft); }
+  .tab.active { background: var(--indigo); color: var(--paper); border-color: var(--indigo); }
+
+  .result-count {
+    font-size: 12.5px;
+    color: #9A9384;
+    margin-top: 14px;
+  }
+
+  .section { margin-top: 24px; }
+
+  .section-title {
+    font-family: 'Source Serif 4', serif;
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--indigo);
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--hairline);
+    margin-bottom: 4px;
+  }
+
+  .entry {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .entry-num {
+    font-family: 'Source Serif 4', serif;
+    font-size: 13px;
+    color: #A8A08C;
+    width: 22px;
+    flex-shrink: 0;
+    text-align: right;
+    padding-top: 2px;
+  }
+
+  .entry-body { flex: 1; min-width: 0; }
+
+  .entry-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .entry-name { font-size: 15.5px; font-weight: 600; color: var(--charcoal); }
+
+  .verified-tag { font-size: 11px; color: var(--sage); white-space: nowrap; font-family: 'Inter', sans-serif; }
+  .verified-tag::before { content: "●"; font-size: 8px; margin-right: 5px; position: relative; top: -1px; }
+
+  .entry-desc { font-size: 13.5px; color: #5A5548; margin-top: 3px; max-width: 58ch; }
+
+  .entry-link {
+    display: inline-block;
+    margin-top: 7px;
+    font-size: 13px;
+    color: var(--indigo);
+    text-decoration: none;
+    border-bottom: 1px solid var(--indigo-soft);
+    word-break: break-all;
+  }
+
+  .entry-link:hover { color: var(--marigold); border-color: var(--marigold); }
+
+  .empty, .loading {
+    padding: 40px 0;
+    text-align: center;
+    color: #9A9384;
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+  }
+
+  .error-banner {
+    margin-top: 20px;
+    padding: 12px 16px;
+    background: #F6E9E7;
+    border-left: 3px solid var(--danger);
+    font-size: 13.5px;
+    color: var(--danger);
+  }
+
+  .how { margin-top: 64px; padding-top: 40px; border-top: 1px solid var(--hairline); }
+  .how h2 { font-family: 'Source Serif 4', serif; font-size: 22px; color: var(--indigo); margin-bottom: 20px; }
+  .how-steps { display: flex; flex-direction: column; gap: 18px; }
+  .how-step { display: flex; gap: 14px; }
+  .how-step-num { font-family: 'Source Serif 4', serif; font-size: 15px; color: var(--marigold); font-weight: 600; width: 20px; flex-shrink: 0; }
+  .how-step-text { font-size: 14px; color: var(--charcoal); }
+  .how-step-text b { color: var(--indigo); }
+
+  .report { margin-top: 56px; padding-top: 32px; border-top: 1px solid var(--hairline); }
+  .report h2 { font-family: 'Source Serif 4', serif; font-size: 20px; color: var(--indigo); margin-bottom: 6px; }
+  .report p { font-size: 13.5px; color: #5A5548; margin-bottom: 18px; max-width: 55ch; }
+  .report form { display: flex; flex-direction: column; gap: 12px; max-width: 420px; }
+
+  .report input, .report textarea {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    padding: 11px 13px;
+    background: var(--paper-raised);
+    border: 1px solid var(--hairline);
+    color: var(--charcoal);
+  }
+
+  .report textarea { resize: vertical; min-height: 70px; }
+  .report input:focus, .report textarea:focus { outline: 2px solid var(--indigo); outline-offset: -1px; }
+
+  .report button {
+    align-self: flex-start;
+    margin-top: 4px;
+    padding: 11px 22px;
+    background: var(--indigo);
+    color: var(--paper);
+    border: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .report button:hover { background: var(--indigo-soft); }
+  .report button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .report-msg { font-size: 13.5px; margin-top: 10px; display: none; }
+  .report-msg.success { color: var(--sage); }
+  .report-msg.error { color: var(--danger); }
+
+  footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--hairline); font-size: 12.5px; color: #9A9384; }
+
+  @media (max-width: 480px) {
+    h1 { font-size: 27px; }
+    nav { padding: 16px 18px; }
+    .wrap { padding: 0 18px 60px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-mark">
+    <svg viewBox="0 0 28 28" fill="none">
+      <path d="M14 2L25 8V14C25 20 20 25 14 26C8 25 3 20 3 14V8L14 2Z" stroke="#1C2B4A" stroke-width="1.6" fill="#FBF9F3"/>
+      <path d="M9 14L12.5 17.5L19 10" stroke="#D68A1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    GenuineWeb
+  </div>
+  <div class="nav-links">
+    <a href="#directory">Directory</a>
+    <a href="#how">How it works</a>
+    <a href="#report">Report a link</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <header class="hero">
+    <h1>Find the real site. Skip the phishing trap.</h1>
+    <p class="tagline">A verified directory of authentic websites — government services, exams, banking and more — so you never land on a fake one by mistake.</p>
+    <div class="warning">
+      GenuineWeb never asks for your Aadhaar, PAN, OTP, or any personal document. It only points you to the correct original website — you complete everything directly there.
+    </div>
+  </header>
+
+  <div id="directory">
+    <div class="search-row">
+      <input type="text" id="search" placeholder="Search — e.g. Aadhaar update, SSC CGL, SBI net banking…" autocomplete="off">
+    </div>
+
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-cat="all">All</button>
+      <button class="tab" data-cat="identity">Identity Documents</button>
+      <button class="tab" data-cat="exams">Exams &amp; Admissions</button>
+      <button class="tab" data-cat="banking">Banking &amp; Finance</button>
+      <button class="tab" data-cat="welfare">Welfare &amp; Utilities</button>
+      <button class="tab" data-cat="education">Education</button>
+    </div>
+
+    <div class="result-count" id="resultCount"></div>
+    <div id="results"><div class="loading">Loading verified links…</div></div>
+  </div>
+
+  <section class="how" id="how">
+    <h2>How it works</h2>
+    <div class="how-steps">
+      <div class="how-step">
+        <div class="how-step-num">01</div>
+        <div class="how-step-text"><b>Search</b> for the service you need — a government document, an exam form, a bank portal.</div>
+      </div>
+      <div class="how-step">
+        <div class="how-step-num">02</div>
+        <div class="how-step-text"><b>Get the verified link</b> — every entry is manually checked, with a visible "last verified" date, served from our database.</div>
+      </div>
+      <div class="how-step">
+        <div class="how-step-num">03</div>
+        <div class="how-step-text"><b>Redirect and complete your task</b> directly on the real website. GenuineWeb never stores or asks for your personal data.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="report" id="report">
+    <h2>Report a broken or suspicious link</h2>
+    <p>Help keep this directory accurate. Reports are saved to our database for review.</p>
+    <form id="reportForm">
+      <input type="text" id="rSite" placeholder="Which site or service? (e.g. PAN card apply)" required maxlength="200">
+      <input type="url" id="rUrl" placeholder="Link in question (optional)" maxlength="500">
+      <textarea id="rDetails" placeholder="What's wrong with it?" maxlength="2000"></textarea>
+      <button type="submit" id="rSubmit">Submit report</button>
+      <div class="report-msg success" id="rSuccess">Thank you — your report has been saved and will be reviewed.</div>
+      <div class="report-msg error" id="rError">Something went wrong. Please try again.</div>
+    </form>
+  </section>
+
+  <footer>
+    Always cross-check sensitive transactions independently.
+  </footer>
+
+</div>
+
+<script>
+const CAT_LABELS = {
+  identity: "Identity Documents",
+  exams: "Exams & Admissions",
+  banking: "Banking & Finance",
+  welfare: "Welfare & Utilities",
+  education: "Education"
+};
+
+const results = document.getElementById('results');
+const resultCount = document.getElementById('resultCount');
+const search = document.getElementById('search');
+const tabs = document.querySelectorAll('.tab');
+let activeCat = 'all';
+let debounceTimer = null;
+
+async function fetchAndRender() {
+  const q = search.value.trim();
+  results.innerHTML = '<div class="loading">Searching…</div>';
+  resultCount.textContent = '';
+
+  try {
+    const params = new URLSearchParams();
+    if (q) params.set('search', q);
+    if (activeCat !== 'all') params.set('category', activeCat);
+
+    const res = await fetch('/api/links?' + params.toString());
+    if (!res.ok) throw new Error('Request failed: ' + res.status);
+    const data = await res.json();
+
+    renderResults(data.links);
+    resultCount.textContent = `${data.count} verified link${data.count === 1 ? '' : 's'} found`;
+  } catch (err) {
+    results.innerHTML = `<div class="error-banner">Could not load links from the server. Is the backend running? (${err.message})</div>`;
+  }
+}
+
+function renderResults(links) {
+  if (!links || links.length === 0) {
+    results.innerHTML = '<div class="empty">No listings match that search yet — try a different term.</div>';
+    return;
+  }
+
+  const groups = {};
+  links.forEach(d => {
+    if (!groups[d.category]) groups[d.category] = [];
+    groups[d.category].push(d);
+  });
+
+  let html = '';
+  Object.keys(groups).forEach(cat => {
+    html += `<div class="section"><div class="section-title">${CAT_LABELS[cat] || cat}</div>`;
+    groups[cat].forEach((d, i) => {
+      html += `
+        <div class="entry">
+          <div class="entry-num">${String(i + 1).padStart(2, '0')}</div>
+          <div class="entry-body">
+            <div class="entry-top">
+              <div class="entry-name">${escapeHtml(d.name)}</div>
+              <div class="verified-tag">verified ${escapeHtml(d.verified_date)}</div>
+            </div>
+            <div class="entry-desc">${escapeHtml(d.description)}</div>
+            <a class="entry-link" href="${d.url}" target="_blank" rel="noopener noreferrer">${d.url}</a>
+          </div>
+        </div>`;
+    });
+    html += `</div>`;
+  });
+
+  results.innerHTML = html;
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+search.addEventListener('input', () => {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(fetchAndRender, 200);
+});
+
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    tabs.forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    activeCat = tab.dataset.cat;
+    fetchAndRender();
+  });
+});
+
+// ---- Report form ----
+const reportForm = document.getElementById('reportForm');
+const rSuccess = document.getElementById('rSuccess');
+const rError = document.getElementById('rError');
+const rSubmit = document.getElementById('rSubmit');
+
+reportForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  rSuccess.style.display = 'none';
+  rError.style.display = 'none';
+  rSubmit.disabled = true;
+  rSubmit.textContent = 'Submitting…';
+
+  const payload = {
+    site: document.getElementById('rSite').value,
+    url: document.getElementById('rUrl').value,
+    details: document.getElementById('rDetails').value,
+  };
+
+  try {
+    const res = await fetch('/api/report', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Submission failed');
+
+    rSuccess.style.display = 'block';
+    reportForm.reset();
+  } catch (err) {
+    rError.textContent = err.message;
+    rError.style.display = 'block';
+  } finally {
+    rSubmit.disabled = false;
+    rSubmit.textContent = 'Submit report';
+  }
+});
+
+fetchAndRender();
+</script>
+</body>
+</html>

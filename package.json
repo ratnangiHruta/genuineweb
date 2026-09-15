@@ -1,0 +1,13 @@
+{
+  "name": "genuineweb",
+  "version": "1.0.0",
+  "description": "A verified directory of authentic websites, protecting users from phishing and DNS spoofing.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "license": "MIT"
+}
